@@ -43,6 +43,7 @@ export default {
   methods: {
     async handleKakaoLogin(code) {
       try {
+        console.log('인증 코드:', code);
         // 카카오 로그인 처리 후 홈으로 리다이렉트
         this.$router.push('/home');
       } catch (error) {
