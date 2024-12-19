@@ -41,6 +41,15 @@ export default {
     }
   },
   methods: {
+    async handleKakaoLogin(code) {
+      try {
+        // 카카오 로그인 처리 후 홈으로 리다이렉트
+        this.$router.push('/home');
+      } catch (error) {
+        console.error('카카오 로그인 실패:', error);
+        alert('로그인에 실패했습니다.');
+      }
+    },
     checkLoginStatus() {
       this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
       if (this.isLoggedIn) {
