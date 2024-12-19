@@ -9,7 +9,10 @@ export default {
   name: 'KakaoLogin',
   methods: {
     loginWithKakao() {
-      const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_APP_KEY}&redirect_uri=${window.location.origin}&response_type=code`;
+      const KAKAO_APP_KEY = process.env.VUE_APP_KAKAO_APP_KEY;
+      const REDIRECT_URI = window.location.origin;
+      const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${KAKAO_APP_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+      
       window.location.href = KAKAO_AUTH_URL;
     }
   }
