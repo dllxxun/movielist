@@ -90,8 +90,13 @@
 </template>
 
 <script>
+import KakaoLogin from '../components/KakaoLogin.vue'
+
 export default {
   name: 'SignInPage',
+  components: {
+    KakaoLogin
+  },
   data() {
     return {
       isLogin: true,
