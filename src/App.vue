@@ -34,6 +34,11 @@ export default {
   },
   created() {
     this.checkLoginStatus()
+    const code = new URL(window.location.href).searchParams.get('code');
+    if (code) {
+      // 카카오 로그인 처리
+      this.handleKakaoLogin(code);
+    }
   },
   methods: {
     checkLoginStatus() {
