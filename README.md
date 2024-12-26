@@ -2,7 +2,7 @@
 # Movie List Web Application
 ![alt text](image.png)
 
-https://homeflix-movielist.netlify.app/
+https://dllxxunhomeflix.netlify.app/
 
 ## 프로젝트 개요
 넷플릭스 스타일의 영화 목록 웹 애플리케이션입니다.
