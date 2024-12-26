@@ -72,5 +72,14 @@ cd <파일 이름>
 # 의존성 설치
 npm install
 
-# 개발 서버 실행
-npm run serve
+# 개발 환경 실행
+npm run serve:dev
+
+# 배포 환경 실행
+npm run serve:prod
+
+# 개발 환경 빌드
+npm run build:dev
+
+# 배포 환경 빌드
+npm run build:prod
