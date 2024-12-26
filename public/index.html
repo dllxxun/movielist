@@ -8,7 +8,8 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script>
-      window.Kakao.init('YOUR_JAVASCRIPT_KEY');
+      window.Kakao.init(process.env.VUE_APP_KAKAO_APP_KEY);
+
     </script>
   </head>
   <body>
