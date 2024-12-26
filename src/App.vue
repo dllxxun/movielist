@@ -39,33 +39,32 @@ export default {
   },
 
   methods: {
-    methods: {
-      kakaoLogin() {
-        window.Kakao.Auth.login({
-          scope: 'profile_nickname, profile_image', // 동의항목 필수
-          success: (response) => {
-            console.log(response);
-            window.Kakao.API.request({
-              url: '/v2/user/me',
-              success: (res) => {
-                const kakao_account = res.kakao_account;
-                console.log('사용자 정보:', kakao_account);
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userNickname', kakao_account.profile.nickname);
-                this.isLoggedIn = true;
-                this.userNickname = kakao_account.profile.nickname;
-                this.$router.push('/home');
-              },
-              fail: (error) => {
-                console.error('사용자 정보 요청 실패:', error);
-              }
-            });
-          },
-          fail: (error) => {
-            console.error('로그인 실패:', error);
-          }
-        });
-      }
+
+    kakaoLogin() {
+      window.Kakao.Auth.login({
+        scope: 'profile_nickname, profile_image', // 동의항목 필수
+        success: (response) => {
+          console.log(response);
+          window.Kakao.API.request({
+            url: '/v2/user/me',
+            success: (res) => {
+              const kakao_account = res.kakao_account;
+              console.log('사용자 정보:', kakao_account);
+              localStorage.setItem('isLoggedIn', 'true');
+              localStorage.setItem('userNickname', kakao_account.profile.nickname);
+              this.isLoggedIn = true;
+              this.userNickname = kakao_account.profile.nickname;
+              this.$router.push('/home');
+            },
+            fail: (error) => {
+              console.error('사용자 정보 요청 실패:', error);
+            }
+          });
+        },
+        fail: (error) => {
+          console.error('로그인 실패:', error);
+        }
+      });
     },
 
     getUserInfo() {
@@ -106,11 +105,10 @@ export default {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown
     },
-    handleLogout() {
+    async handleLogout() {
       if (window.Kakao.Auth.getAccessToken()) {
-        window.Kakao.Auth.logout(() => {
-          console.log('카카오 로그아웃 완료');
-        });
+        await window.Kakao.Auth.logout();
+        console.log('카카오 로그아웃 완료');
       }
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('userNickname');
