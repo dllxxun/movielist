@@ -33,14 +33,43 @@ export default {
     }
   },
   created() {
-    this.checkLoginStatus()
-    const code = new URL(window.location.href).searchParams.get('code');
-    if (code) {
-      // 카카오 로그인 처리
-      this.handleKakaoLogin(code);
+    if (window.Kakao && !window.Kakao.isInitialized()) {
+      window.Kakao.init(process.env.VUE_APP_KAKAO_APP_KEY)
     }
   },
+
   methods: {
+    kakaoLogin() {
+      window.Kakao.Auth.login({
+        success: (authObj) => {
+          console.log(authObj);
+          this.getUserInfo();
+        },
+        fail: (err) => {
+          console.error(err);
+          alert('로그인에 실패했습니다.');
+        },
+      });
+    },
+    getUserInfo() {
+      window.Kakao.API.request({
+        url: '/v2/user/me',
+        success: (res) => {
+          const kakao_account = res.kakao_account;
+          console.log(kakao_account);
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('userNickname', kakao_account.profile.nickname);
+          this.isLoggedIn = true;
+          this.userNickname = kakao_account.profile.nickname;
+          this.$router.push('/home');
+        },
+        fail: (error) => {
+          console.error(error);
+          alert('사용자 정보를 가져오는데 실패했습니다.');
+        },
+      });
+    },
+
     async handleKakaoLogin(code) {
       try {
         console.log('인증 코드:', code);
@@ -61,12 +90,18 @@ export default {
       this.showDropdown = !this.showDropdown
     },
     handleLogout() {
-      localStorage.removeItem('isLoggedIn')
-      localStorage.removeItem('rememberMe')
-      this.isLoggedIn = false
-      this.showDropdown = false
-      this.$router.push('/signin')
+      if (window.Kakao.Auth.getAccessToken()) {
+        window.Kakao.Auth.logout(() => {
+          console.log('카카오 로그아웃 완료');
+        });
+      }
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userNickname');
+      this.isLoggedIn = false;
+      this.showDropdown = false;
+      this.$router.push('/signin');
     },
+
     goToHome() {
       this.$router.push('/home')
     },
@@ -230,5 +265,19 @@ a:hover {
 /* 활성 링크 스타일 */
 .router-link-active {
   color: #e50914;
+}
+
+.kakao-login-btn {
+  background-color: #FEE500;
+  color: #000000;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.kakao-login-btn:hover {
+  background-color: #E6D000;
 }
 </style>
