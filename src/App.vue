@@ -33,58 +33,15 @@ export default {
     }
   },
   created() {
-    if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init(process.env.VUE_APP_KAKAO_APP_KEY)
+    this.checkLoginStatus()
+    const code = new URL(window.location.href).searchParams.get('code');
+    if (code) {
+      // 카카오 로그인 처리
+      this.handleKakaoLogin(code);
     }
   },
 
   methods: {
-
-    kakaoLogin() {
-      window.Kakao.Auth.login({
-        scope: 'profile_nickname, profile_image', // 동의항목 필수
-        success: (response) => {
-          console.log(response);
-          window.Kakao.API.request({
-            url: '/v2/user/me',
-            success: (res) => {
-              const kakao_account = res.kakao_account;
-              console.log('사용자 정보:', kakao_account);
-              localStorage.setItem('isLoggedIn', 'true');
-              localStorage.setItem('userNickname', kakao_account.profile.nickname);
-              this.isLoggedIn = true;
-              this.userNickname = kakao_account.profile.nickname;
-              this.$router.push('/home');
-            },
-            fail: (error) => {
-              console.error('사용자 정보 요청 실패:', error);
-            }
-          });
-        },
-        fail: (error) => {
-          console.error('로그인 실패:', error);
-        }
-      });
-    },
-
-    getUserInfo() {
-      window.Kakao.API.request({
-        url: '/v2/user/me',
-        success: (res) => {
-          const kakao_account = res.kakao_account;
-          console.log(kakao_account);
-          localStorage.setItem('isLoggedIn', 'true');
-          localStorage.setItem('userNickname', kakao_account.profile.nickname);
-          this.isLoggedIn = true;
-          this.userNickname = kakao_account.profile.nickname;
-          this.$router.push('/home');
-        },
-        fail: (error) => {
-          console.error(error);
-          alert('사용자 정보를 가져오는데 실패했습니다.');
-        },
-      });
-    },
 
     async handleKakaoLogin(code) {
       try {
@@ -106,15 +63,11 @@ export default {
       this.showDropdown = !this.showDropdown
     },
     async handleLogout() {
-      if (window.Kakao.Auth.getAccessToken()) {
-        await window.Kakao.Auth.logout();
-        console.log('카카오 로그아웃 완료');
-      }
-      localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('userNickname');
-      this.isLoggedIn = false;
-      this.showDropdown = false;
-      this.$router.push('/signin');
+      localStorage.removeItem('isLoggedIn')
+      localStorage.removeItem('rememberMe')
+      this.isLoggedIn = false
+      this.showDropdown = false
+      this.$router.push('/signin')
     },
 
     goToHome() {
@@ -282,17 +235,5 @@ a:hover {
   color: #e50914;
 }
 
-.kakao-login-btn {
-  background-color: #FEE500;
-  color: #000000;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
 
-.kakao-login-btn:hover {
-  background-color: #E6D000;
-}
 </style>
