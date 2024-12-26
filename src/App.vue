@@ -39,18 +39,35 @@ export default {
   },
 
   methods: {
-    kakaoLogin() {
-      window.Kakao.Auth.login({
-        success: (authObj) => {
-          console.log(authObj);
-          this.getUserInfo();
-        },
-        fail: (err) => {
-          console.error(err);
-          alert('로그인에 실패했습니다.');
-        },
-      });
+    methods: {
+      kakaoLogin() {
+        window.Kakao.Auth.login({
+          scope: 'profile_nickname, profile_image', // 동의항목 필수
+          success: (response) => {
+            console.log(response);
+            window.Kakao.API.request({
+              url: '/v2/user/me',
+              success: (res) => {
+                const kakao_account = res.kakao_account;
+                console.log('사용자 정보:', kakao_account);
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userNickname', kakao_account.profile.nickname);
+                this.isLoggedIn = true;
+                this.userNickname = kakao_account.profile.nickname;
+                this.$router.push('/home');
+              },
+              fail: (error) => {
+                console.error('사용자 정보 요청 실패:', error);
+              }
+            });
+          },
+          fail: (error) => {
+            console.error('로그인 실패:', error);
+          }
+        });
+      }
     },
+
     getUserInfo() {
       window.Kakao.API.request({
         url: '/v2/user/me',
